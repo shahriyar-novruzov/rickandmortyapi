@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.egemsoft.application.rickandmortyapi: DEBUG
+
+root:
+  url: /v1/rickandmortyapi
+
+client:
+  rickandmortyapi:
+    endpoint: https://rickandmortyapi.com/api
+
+feign:
+  httpclient:
+    disable-ssl-validation: true
+
+pagination:
+  limit: 20
+
+
