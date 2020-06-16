@@ -23,9 +23,4 @@ public class RickAndMortyApiClientFallback implements RickAndMortyApiClient {
     public RestResponse<List<Character>> getCharacters(Integer pageNumber) {
         return null;
     }
-
-    @Override
-    public RestResponse<List<Location>> getLocations(Integer pageNumber) {
-        return null;
-    }
 }

@@ -25,7 +25,7 @@ public class CharacterController {
 
     @GetMapping
     public RestResponse<List<Character>> findCharacters(@RequestParam(name = "page") @Nullable Integer pageNumber) {
-        return RestResponse.of(characterService.findCharacters(pageNumber));
+        return characterService.findCharacters(pageNumber);
     }
 
     @GetMapping("/{id}")

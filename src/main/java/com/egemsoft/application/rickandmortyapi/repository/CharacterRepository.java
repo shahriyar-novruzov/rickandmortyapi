@@ -2,11 +2,12 @@ package com.egemsoft.application.rickandmortyapi.repository;
 
 import com.egemsoft.application.rickandmortyapi.model.Character;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Repository
 public class CharacterRepository {
 
     private List<Character> characters = new ArrayList<>();

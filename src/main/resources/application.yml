@@ -11,7 +11,7 @@ root:
 
 client:
   rickandmortyapi:
-    endpoint: https://rickandmortyapi.com/api
+    url: https://rickandmortyapi.com/api
 
 feign:
   httpclient:

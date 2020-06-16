@@ -25,7 +25,7 @@ public class EpisodeController {
 
     @GetMapping
     public RestResponse<List<Episode>> findCharacters(@RequestParam(name = "page") @Nullable Integer pageNumber) {
-        return RestResponse.of(episodeService.findEpisodes(pageNumber));
+        return episodeService.findEpisodes(pageNumber);
     }
 
     @GetMapping("/{id}")
