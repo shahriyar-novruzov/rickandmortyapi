@@ -15,7 +15,7 @@ import java.util.List;
 @Primary
 @FeignClient(name = "account",
         url = "${client.rickandmortyapi.url}",
-        fallback = RickAndMortyApiClientFallback.class, configuration = FeignSSLConfig.class)
+        fallback = RickAndMortyApiClientFallbackFactory.class, configuration = FeignSSLConfig.class)
 public interface RickAndMortyApiClient {
 
     @GetMapping("/episode?page={pageNumber}")
@@ -23,4 +23,7 @@ public interface RickAndMortyApiClient {
 
     @GetMapping("/character?page={pageNumber}")
     RestResponse<List<Character>> getCharacters(@RequestParam("pageNumber") Integer pageNumber);
+
+    @GetMapping("/location?page={pageNumber}")
+    RestResponse<List<Location>> getLocations(@RequestParam("pageNumber") Integer pageNumber);
 }

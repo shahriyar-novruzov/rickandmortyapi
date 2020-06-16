@@ -2,24 +2,15 @@
 <configuration>
 
     <springProfile name="default">
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-        </appender>
-    </springProfile>
-
-    <springProfile name="!default">
-        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-                <charset>utf8</charset>
+                <pattern>[%thread] %-5level %logger{35} - %msg %n</pattern>
             </encoder>
         </appender>
-    </springProfile>
 
-    <root level="INFO" additivity="false">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
 
 </configuration>

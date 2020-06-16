@@ -1,4 +1,4 @@
-package com.egemsoft.application.rickandmortyapi.service;
+package com.egemsoft.application.rickandmortyapi.service.impl;
 
 import com.egemsoft.application.rickandmortyapi.model.Base;
 import com.egemsoft.application.rickandmortyapi.model.ResponseInfo;

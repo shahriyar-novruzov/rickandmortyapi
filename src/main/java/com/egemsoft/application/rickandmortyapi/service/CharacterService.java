@@ -6,7 +6,7 @@ import com.egemsoft.application.rickandmortyapi.model.RestResponse;
 import java.util.List;
 
 public interface CharacterService {
-    RestResponse<List<Character>> findCharacters(Integer pageNumber);
+    RestResponse<List<Character>> findPaginated(Integer pageNumber);
 
     Character findById(Long id);
 }

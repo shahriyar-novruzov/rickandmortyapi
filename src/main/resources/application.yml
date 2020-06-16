@@ -5,9 +5,11 @@ logging:
   level:
     root: INFO
     com.egemsoft.application.rickandmortyapi: DEBUG
-
-root:
-  url: /v1/rickandmortyapi
+ms:
+  root:
+    url: /v1/rickandmortyapi
+  full:
+    url: http://localhost:8080/v1/rickandmortyapi
 
 client:
   rickandmortyapi:

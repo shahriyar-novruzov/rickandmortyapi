@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/character")
+@RequestMapping(path = "${ms.root.url}/character")
 public class CharacterController {
 
     private final CharacterService characterService;
@@ -24,8 +24,8 @@ public class CharacterController {
     }
 
     @GetMapping
-    public RestResponse<List<Character>> findCharacters(@RequestParam(name = "page") @Nullable Integer pageNumber) {
-        return characterService.findCharacters(pageNumber);
+    public RestResponse<List<Character>> findPaginated(@RequestParam(name = "page") @Nullable Integer pageNumber) {
+        return characterService.findPaginated(pageNumber);
     }
 
     @GetMapping("/{id}")

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/episode")
+@RequestMapping(path = "${ms.root.url}/episode")
 public class EpisodeController {
 
     private final EpisodeService episodeService;
@@ -24,8 +24,8 @@ public class EpisodeController {
     }
 
     @GetMapping
-    public RestResponse<List<Episode>> findCharacters(@RequestParam(name = "page") @Nullable Integer pageNumber) {
-        return episodeService.findEpisodes(pageNumber);
+    public RestResponse<List<Episode>> findPaginated(@RequestParam(name = "page") @Nullable Integer pageNumber) {
+        return episodeService.findPaginated(pageNumber);
     }
 
     @GetMapping("/{id}")
