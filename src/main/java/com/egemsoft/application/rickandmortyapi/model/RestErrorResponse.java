@@ -18,7 +18,7 @@ public class RestErrorResponse {
     @ApiModelProperty("Error unique ID")
     private String uuid;
     @ApiModelProperty("Error code - 404, 503 etc")
-    private String code;
+    private Integer code;
     @ApiModelProperty("Error message")
     private String message;
 }

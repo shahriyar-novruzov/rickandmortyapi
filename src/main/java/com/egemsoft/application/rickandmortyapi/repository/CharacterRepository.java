@@ -1,7 +1,6 @@
 package com.egemsoft.application.rickandmortyapi.repository;
 
 import com.egemsoft.application.rickandmortyapi.model.Character;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

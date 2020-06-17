@@ -20,6 +20,6 @@ feign:
     disable-ssl-validation: true
 
 pagination:
-  limit: 20
+  countLimit: 20
 
 
