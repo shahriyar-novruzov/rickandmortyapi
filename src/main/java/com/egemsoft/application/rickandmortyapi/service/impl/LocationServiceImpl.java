@@ -1,9 +1,11 @@
 package com.egemsoft.application.rickandmortyapi.service.impl;
 
+import com.egemsoft.application.rickandmortyapi.helper.ReportingHelper;
 import com.egemsoft.application.rickandmortyapi.logger.ESLogger;
 import com.egemsoft.application.rickandmortyapi.model.Location;
 import com.egemsoft.application.rickandmortyapi.model.ResponseInfo;
 import com.egemsoft.application.rickandmortyapi.model.RestResponse;
+import com.egemsoft.application.rickandmortyapi.model.enums.Endpoint;
 import com.egemsoft.application.rickandmortyapi.repository.LocationRepository;
 import com.egemsoft.application.rickandmortyapi.service.LocationService;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,15 +26,18 @@ public class LocationServiceImpl extends AbstractServiceImpl<Location> implement
     private final static String LOCATION_PAGE_URL = "/location/?page=";
 
     private final LocationRepository locationRepository;
+    private final ReportingHelper reportingHelper;
     private final String url;
 
     /**
-     * @param locationRepository injected Location repository for getting records
+     * @param locationRepository Location repository for getting records
      * @param url                root url for application
      */
     public LocationServiceImpl(LocationRepository locationRepository,
+                               ReportingHelper reportingHelper,
                                @Value("${ms.full.url}") String url) {
         this.locationRepository = locationRepository;
+        this.reportingHelper = reportingHelper;
         this.url = url;
     }
 
@@ -43,11 +48,13 @@ public class LocationServiceImpl extends AbstractServiceImpl<Location> implement
     @Override
     public RestResponse<List<Location>> findPaginated(Integer pageNumber) {
         logger.debug("findPaginated pageNumber: {}", pageNumber);
-        List<Location> episodes = locationRepository.getLocations();
-        ResponseInfo responseInfo = getResponseInfo(episodes.size(), pageNumber, url.concat(LOCATION_PAGE_URL));
-        List<Location> paginatedEpisodes = findPaginatedData(episodes, pageNumber);
 
-        return RestResponse.of(paginatedEpisodes, responseInfo);
+        List<Location> locations = locationRepository.getLocations();
+        ResponseInfo responseInfo = getResponseInfo(locations.size(), pageNumber, url.concat(LOCATION_PAGE_URL));
+        List<Location> paginatedLocations = findPaginatedData(locations, pageNumber);
+        reportingHelper.addHistory(Endpoint.LOCATION, RestResponse.of(paginatedLocations, responseInfo));
+
+        return RestResponse.of(paginatedLocations, responseInfo);
     }
 
     /**
@@ -57,6 +64,10 @@ public class LocationServiceImpl extends AbstractServiceImpl<Location> implement
     @Override
     public Location findById(Long id) {
         logger.debug("findById id: {}", id);
-        return super.findById(locationRepository.getLocations(), id);
+
+        Location location = findById(locationRepository.getLocations(), id);
+        reportingHelper.addHistory(Endpoint.LOCATION, location);
+
+        return location;
     }
 }

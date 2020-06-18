@@ -2,19 +2,13 @@ package com.egemsoft.application.rickandmortyapi.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Base response class for Rest requests
  */
 @ApiModel("Response from Rest service")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class RestResponse<T> {
 
     private ResponseInfo info;

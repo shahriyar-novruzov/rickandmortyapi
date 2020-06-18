@@ -15,15 +15,6 @@ client:
   rickandmortyapi:
     url: https://rickandmortyapi.com/api
 
-feign:
-  httpclient:
-    disable-ssl-validation: true
-
 pagination:
   countLimit: 20
-
-spring:
-  jackson:
-    mapper:
-      ACCEPT_CASE_INSENSITIVE_ENUMS: true
 

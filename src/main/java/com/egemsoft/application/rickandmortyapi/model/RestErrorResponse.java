@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @ApiModel("Error response from Rest service")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class RestErrorResponse {
 
     @ApiModelProperty("Error unique ID")

@@ -1,10 +1,12 @@
 package com.egemsoft.application.rickandmortyapi.service.impl;
 
+import com.egemsoft.application.rickandmortyapi.helper.ReportingHelper;
 import com.egemsoft.application.rickandmortyapi.logger.ESLogger;
 import com.egemsoft.application.rickandmortyapi.model.Base;
 import com.egemsoft.application.rickandmortyapi.model.Episode;
 import com.egemsoft.application.rickandmortyapi.model.ResponseInfo;
 import com.egemsoft.application.rickandmortyapi.model.RestResponse;
+import com.egemsoft.application.rickandmortyapi.model.enums.Endpoint;
 import com.egemsoft.application.rickandmortyapi.repository.EpisodeRepository;
 import com.egemsoft.application.rickandmortyapi.service.EpisodeService;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,15 +30,18 @@ public class EpisodeServiceImpl extends AbstractServiceImpl<Episode> implements 
     private final static String EPISODE_PAGE_URL = "/episode/?page=";
 
     private final EpisodeRepository episodeRepository;
+    private final ReportingHelper reportingHelper;
     private final String url;
 
     /**
-     * @param episodeRepository injected Episode repository for getting records
+     * @param episodeRepository Episode repository for getting records
      * @param url               root url for application
      */
     public EpisodeServiceImpl(EpisodeRepository episodeRepository,
+                              ReportingHelper reportingHelper,
                               @Value("${ms.full.url}") String url) {
         this.episodeRepository = episodeRepository;
+        this.reportingHelper = reportingHelper;
         this.url = url;
     }
 
@@ -47,10 +52,12 @@ public class EpisodeServiceImpl extends AbstractServiceImpl<Episode> implements 
     @Override
     public RestResponse<List<Episode>> findPaginated(Integer pageNumber, String sortBy) {
         logger.debug("findPaginated pageNumber: {}", pageNumber);
+
         List<Episode> episodes = episodeRepository.getEpisodes();
         episodes.sort(getComparator(sortBy));
         ResponseInfo responseInfo = getResponseInfo(episodes.size(), pageNumber, url.concat(EPISODE_PAGE_URL));
         List<Episode> paginatedEpisodes = findPaginatedData(episodes, pageNumber);
+        reportingHelper.addHistory(Endpoint.EPISODE, RestResponse.of(paginatedEpisodes, responseInfo));
 
         return RestResponse.of(paginatedEpisodes, responseInfo);
     }
@@ -73,6 +80,10 @@ public class EpisodeServiceImpl extends AbstractServiceImpl<Episode> implements 
     @Override
     public Episode findById(Long id) {
         logger.debug("findById id: {}", id);
-        return super.findById(episodeRepository.getEpisodes(), id);
+
+        Episode episode = findById(episodeRepository.getEpisodes(), id);
+        reportingHelper.addHistory(Endpoint.EPISODE, episode);
+
+        return episode;
     }
 }

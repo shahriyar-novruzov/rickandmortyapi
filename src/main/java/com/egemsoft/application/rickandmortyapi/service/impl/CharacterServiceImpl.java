@@ -1,10 +1,12 @@
 package com.egemsoft.application.rickandmortyapi.service.impl;
 
+import com.egemsoft.application.rickandmortyapi.helper.ReportingHelper;
 import com.egemsoft.application.rickandmortyapi.logger.ESLogger;
 import com.egemsoft.application.rickandmortyapi.model.Base;
 import com.egemsoft.application.rickandmortyapi.model.Character;
 import com.egemsoft.application.rickandmortyapi.model.ResponseInfo;
 import com.egemsoft.application.rickandmortyapi.model.RestResponse;
+import com.egemsoft.application.rickandmortyapi.model.enums.Endpoint;
 import com.egemsoft.application.rickandmortyapi.repository.CharacterRepository;
 import com.egemsoft.application.rickandmortyapi.service.CharacterService;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,16 +29,20 @@ public class CharacterServiceImpl extends AbstractServiceImpl<Character> impleme
     private static final String SORT_BY_EPISODE = "episode";
     private static final String CHARACTER_PAGE_URL = "/character/?page=";
 
+    private final ReportingHelper reportingHelper;
     private final CharacterRepository characterRepository;
     private final String url;
 
     /**
-     * @param characterRepository injected Character repository for getting records
+     * @param characterRepository Character repository for getting records
+     * @param reportingHelper     reporting helper for add history
      * @param url                 root url for application
      */
     public CharacterServiceImpl(CharacterRepository characterRepository,
+                                ReportingHelper reportingHelper,
                                 @Value("${ms.full.url}") String url) {
         this.characterRepository = characterRepository;
+        this.reportingHelper = reportingHelper;
         this.url = url;
     }
 
@@ -47,10 +53,12 @@ public class CharacterServiceImpl extends AbstractServiceImpl<Character> impleme
     @Override
     public RestResponse<List<Character>> findPaginated(Integer pageNumber, String sortBy) {
         logger.debug("findPaginated pageNumber: {}", pageNumber);
+
         List<Character> characters = characterRepository.getCharacters();
         characters.sort(getComparator(sortBy));
         ResponseInfo responseInfo = getResponseInfo(characters.size(), pageNumber, url.concat(CHARACTER_PAGE_URL));
         List<Character> paginatedCharacters = findPaginatedData(characters, pageNumber);
+        reportingHelper.addHistory(Endpoint.CHARACTER, RestResponse.of(paginatedCharacters, responseInfo));
 
         return RestResponse.of(paginatedCharacters, responseInfo);
     }
@@ -73,6 +81,10 @@ public class CharacterServiceImpl extends AbstractServiceImpl<Character> impleme
     @Override
     public Character findById(Long id) {
         logger.debug("findById id: {}", id);
-        return super.findById(characterRepository.getCharacters(), id);
+
+        Character character = findById(characterRepository.getCharacters(), id);
+        reportingHelper.addHistory(Endpoint.CHARACTER, character);
+
+        return character;
     }
 }
