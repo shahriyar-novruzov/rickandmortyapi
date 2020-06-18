@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+/**
+ * Service for getting initial data from origin client
+ */
 @Component
 public class StartUpService {
 
@@ -24,6 +27,12 @@ public class StartUpService {
     private final EpisodeRepository episodeRepository;
     private final LocationRepository locationRepository;
 
+    /**
+     * @param rickAndMortyApiClient client for getting data
+     * @param characterRepository   data store for Character records
+     * @param episodeRepository     data store for Episode records
+     * @param locationRepository    data store for Location records
+     */
     public StartUpService(RickAndMortyApiClient rickAndMortyApiClient,
                           CharacterRepository characterRepository,
                           EpisodeRepository episodeRepository,
@@ -34,6 +43,12 @@ public class StartUpService {
         this.locationRepository = locationRepository;
     }
 
+    /**
+     * Loading all data from client
+     * <p>
+     * Time complexity O(N + M + K), also network cost
+     * Space complexity O(N + M + K)
+     */
     @PostConstruct
     public void init() {
         loadCharacters();
@@ -41,6 +56,12 @@ public class StartUpService {
         loadLocations();
     }
 
+    /**
+     * Loading Characters from client
+     * <p>
+     * Time complexity O(N) - N count of Character records (also network cost)
+     * Space complexity O(N) - N count of Character records
+     */
     private void loadCharacters() {
         logger.info("Loading Characters started...");
         boolean hasNext = true;
@@ -53,6 +74,12 @@ public class StartUpService {
         logger.info("Loading Characters finished successfully.");
     }
 
+    /**
+     * Loading Episodes from client
+     * <p>
+     * Time complexity O(M) - M count of Episode records (also network cost)
+     * Space complexity O(M) - M count of Episode records
+     */
     private void loadEpisodes() {
         logger.info("Loading Episodes started...");
         boolean hasNext = true;
@@ -65,6 +92,12 @@ public class StartUpService {
         logger.info("Loading Episodes finished successfully.");
     }
 
+    /**
+     * Loading Locations from client
+     * <p>
+     * Time complexity O(K) - K count of Location records (also network cost)
+     * Space complexity O(K) - K count of Location records
+     */
     private void loadLocations() {
         logger.info("Loading Locations started...");
         boolean hasNext = true;

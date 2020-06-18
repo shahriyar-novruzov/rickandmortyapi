@@ -1,6 +1,5 @@
 package com.egemsoft.application.rickandmortyapi.service;
 
-import com.egemsoft.application.rickandmortyapi.model.Episode;
 import com.egemsoft.application.rickandmortyapi.model.Location;
 import com.egemsoft.application.rickandmortyapi.model.RestResponse;
 

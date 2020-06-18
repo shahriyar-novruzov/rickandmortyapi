@@ -14,24 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class RickAndMortyApiServiceImpl implements RickAndMortyApiService {
 
-    /**
-     * end of full url for Characters
-     */
     private final static String CHARACTER_URL = "/character";
-
-    /**
-     * end of full url for Episodes
-     */
     private final static String EPISODE_URL = "/episode";
-
-    /**
-     * end of full url for Locations
-     */
     private final static String LOCATION_URL = "/location";
 
-    /**
-     * full url for application
-     */
     private final String url;
 
     /**

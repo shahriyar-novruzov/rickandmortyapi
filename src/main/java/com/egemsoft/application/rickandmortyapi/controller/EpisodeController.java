@@ -24,8 +24,9 @@ public class EpisodeController {
     }
 
     @GetMapping
-    public RestResponse<List<Episode>> findPaginated(@RequestParam(name = "page") @Nullable Integer pageNumber) {
-        return episodeService.findPaginated(pageNumber);
+    public RestResponse<List<Episode>> findPaginated(@RequestParam(name = "page") @Nullable Integer pageNumber,
+                                                     @RequestParam(name = "sortBy") @Nullable String sortBy) {
+        return episodeService.findPaginated(pageNumber, sortBy);
     }
 
     @GetMapping("/{id}")

@@ -24,8 +24,9 @@ public class CharacterController {
     }
 
     @GetMapping
-    public RestResponse<List<Character>> findPaginated(@RequestParam(name = "page") @Nullable Integer pageNumber) {
-        return characterService.findPaginated(pageNumber);
+    public RestResponse<List<Character>> findPaginated(@RequestParam(name = "page") @Nullable Integer pageNumber,
+                                                       @RequestParam(name = "sortBy") @Nullable String sortBy) {
+        return characterService.findPaginated(pageNumber, sortBy);
     }
 
     @GetMapping("/{id}")

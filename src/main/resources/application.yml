@@ -7,9 +7,9 @@ logging:
     com.egemsoft.application.rickandmortyapi: DEBUG
 ms:
   root:
-    url: /v1/rickandmortyapi
+    url: /v1/rickandmortyapi/api
   full:
-    url: http://localhost:8080/v1/rickandmortyapi
+    url: http://localhost:8080/v1/rickandmortyapi/api
 
 client:
   rickandmortyapi:
@@ -22,4 +22,8 @@ feign:
 pagination:
   countLimit: 20
 
+spring:
+  jackson:
+    mapper:
+      ACCEPT_CASE_INSENSITIVE_ENUMS: true
 

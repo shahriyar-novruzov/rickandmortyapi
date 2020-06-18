@@ -20,22 +20,10 @@ import java.util.List;
 @Service
 public class LocationServiceImpl extends AbstractServiceImpl<Location> implements LocationService {
 
-    /**
-     * Safe Egemsoft logger
-     */
     private static final ESLogger logger = ESLogger.getLogger(LocationServiceImpl.class);
-    /**
-     * Location api url
-     */
     private final static String LOCATION_PAGE_URL = "/location/?page=";
 
-    /**
-     * Data store for Locations
-     */
     private final LocationRepository locationRepository;
-    /**
-     * Root url for application
-     */
     private final String url;
 
     /**
@@ -57,7 +45,7 @@ public class LocationServiceImpl extends AbstractServiceImpl<Location> implement
         logger.debug("findPaginated pageNumber: {}", pageNumber);
         List<Location> episodes = locationRepository.getLocations();
         ResponseInfo responseInfo = getResponseInfo(episodes.size(), pageNumber, url.concat(LOCATION_PAGE_URL));
-        List<Location> paginatedEpisodes = super.findPaginatedData(episodes, pageNumber);
+        List<Location> paginatedEpisodes = findPaginatedData(episodes, pageNumber);
 
         return RestResponse.of(paginatedEpisodes, responseInfo);
     }

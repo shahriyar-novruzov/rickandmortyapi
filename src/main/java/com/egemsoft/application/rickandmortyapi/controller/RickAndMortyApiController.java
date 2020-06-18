@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "${ms.root.url}/api")
+@RequestMapping(path = "${ms.root.url}")
 public class RickAndMortyApiController {
 
     private final RickAndMortyApiService rickAndMortyApiService;

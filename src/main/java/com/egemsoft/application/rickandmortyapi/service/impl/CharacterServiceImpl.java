@@ -1,6 +1,7 @@
 package com.egemsoft.application.rickandmortyapi.service.impl;
 
 import com.egemsoft.application.rickandmortyapi.logger.ESLogger;
+import com.egemsoft.application.rickandmortyapi.model.Base;
 import com.egemsoft.application.rickandmortyapi.model.Character;
 import com.egemsoft.application.rickandmortyapi.model.ResponseInfo;
 import com.egemsoft.application.rickandmortyapi.model.RestResponse;
@@ -9,6 +10,7 @@ import com.egemsoft.application.rickandmortyapi.service.CharacterService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -20,24 +22,12 @@ import java.util.List;
 @Service
 public class CharacterServiceImpl extends AbstractServiceImpl<Character> implements CharacterService {
 
-    /**
-     * Safe Egemsoft logger
-     */
     private static final ESLogger logger = ESLogger.getLogger(CharacterServiceImpl.class);
+    private static final String SORT_BY_NAME = "name";
+    private static final String SORT_BY_EPISODE = "episode";
+    private static final String CHARACTER_PAGE_URL = "/character/?page=";
 
-    /**
-     * Character api url
-     */
-    private final static String CHARACTER_PAGE_URL = "/character/?page=";
-
-    /**
-     * Data store for Characters
-     */
     private final CharacterRepository characterRepository;
-
-    /**
-     * Root url for application
-     */
     private final String url;
 
     /**
@@ -55,13 +45,25 @@ public class CharacterServiceImpl extends AbstractServiceImpl<Character> impleme
      * @return found Characters on requested page
      */
     @Override
-    public RestResponse<List<Character>> findPaginated(Integer pageNumber) {
+    public RestResponse<List<Character>> findPaginated(Integer pageNumber, String sortBy) {
         logger.debug("findPaginated pageNumber: {}", pageNumber);
         List<Character> characters = characterRepository.getCharacters();
+        characters.sort(getComparator(sortBy));
         ResponseInfo responseInfo = getResponseInfo(characters.size(), pageNumber, url.concat(CHARACTER_PAGE_URL));
-        List<Character> paginatedCharacters = super.findPaginatedData(characters, pageNumber);
+        List<Character> paginatedCharacters = findPaginatedData(characters, pageNumber);
 
         return RestResponse.of(paginatedCharacters, responseInfo);
+    }
+
+    private Comparator<Character> getComparator(String sortBy) {
+        if (sortBy == null)
+            return Comparator.comparing(Base::getId);
+        else if (sortBy.equals(SORT_BY_NAME))
+            return Comparator.comparing(Character::getName);
+        else if (sortBy.equals(SORT_BY_EPISODE))
+            return Comparator.comparingInt(character -> character.getEpisode().size());
+        else
+            return Comparator.comparing(Base::getId);
     }
 
     /**
