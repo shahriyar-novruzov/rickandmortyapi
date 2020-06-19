@@ -1,18 +1,20 @@
 package com.egemsoft.application.rickandmortyapi.service;
 
+import com.egemsoft.application.rickandmortyapi.helper.CountHelper;
 import com.egemsoft.application.rickandmortyapi.model.Character;
 import com.egemsoft.application.rickandmortyapi.model.ThreadDemo;
 import com.egemsoft.application.rickandmortyapi.repository.CharacterRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+/**
+ * Service for count Characters name characters by multiple thread concurrently
+ */
 @Component
 public class ThreadDemoService {
 
@@ -20,12 +22,9 @@ public class ThreadDemoService {
     private static final String CHAR_COUNT = "CharCount";
 
     private final CharacterRepository characterRepository;
-    private Map<String, Integer> threadMap;
+    private final ExecutorService executorService;
+    private final CountHelper countHelper;
     private CountDownLatch countDownLatch;
-
-    public ThreadDemoService(CharacterRepository characterRepository) {
-        this.characterRepository = characterRepository;
-    }
 
     class NameCharacterCounter implements Runnable {
         private String name;
@@ -40,40 +39,51 @@ public class ThreadDemoService {
 
         @Override
         public void run() {
-            String currentThreadName = Thread.currentThread().getName();
-            threadMap.put(currentThreadName, threadMap.getOrDefault(currentThreadName, 0) + name.length());
+            countHelper.increment(name.length());
             countDownLatch.countDown();
         }
     }
 
+    public ThreadDemoService(CharacterRepository characterRepository,
+                             ExecutorService executorService,
+                             CountHelper countHelper) {
+        this.characterRepository = characterRepository;
+        this.executorService = executorService;
+        this.countHelper = countHelper;
+    }
+
+    /**
+     * @return data about total characters count and count by threads
+     */
     public ThreadDemo countNameCharacters() {
 
         List<Character> characters = characterRepository.getCharacters();
+        countHelper.clear();
         countDownLatch = new CountDownLatch(characters.size());
-        threadMap = new HashMap<>();
-        ExecutorService executorService = Executors.newFixedThreadPool(25);
 
-        for (Character character : characterRepository.getCharacters()) {
-            NameCharacterCounter nameCharacterCounter = new NameCharacterCounter(character.getName());
-            executorService.submit(nameCharacterCounter);
+        for (Character character : characters) {
+            executorService.submit(new NameCharacterCounter(character.getName()));
         }
 
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            e.printStackTrace();
         }
 
         int totalCount = 0;
 
-        for (String threadName : threadMap.keySet()) {
-            totalCount += threadMap.get(threadName);
+        Map<String, Integer> countsByThreads = countHelper.getCountsByThreads();
+
+        for (String threadName : countsByThreads.keySet()) {
+            totalCount += countsByThreads.get(threadName);
         }
 
         List<String> result = new ArrayList<>();
         result.add(TOTAL_CHAR_COUNT.concat(": ").concat(String.valueOf(totalCount)));
-        for (String threadName : threadMap.keySet())
-            result.add(threadName.concat(CHAR_COUNT.concat(": ")).concat(String.valueOf(threadMap.get(threadName))));
+        for (String threadName : countsByThreads.keySet())
+            result.add(
+                    threadName.concat(CHAR_COUNT.concat(": ")).concat(String.valueOf(countsByThreads.get(threadName))));
 
         return ThreadDemo
                 .builder()

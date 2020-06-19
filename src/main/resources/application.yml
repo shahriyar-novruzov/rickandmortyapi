@@ -18,3 +18,6 @@ client:
 pagination:
   countLimit: 20
 
+executer:
+  threadCount: 25
+
