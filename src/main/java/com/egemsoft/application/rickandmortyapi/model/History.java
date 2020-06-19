@@ -16,5 +16,6 @@ public class History {
     private String userIp;
     private String userAgent;
     private LocalDateTime dateTime;
+    private String errorMessage;
     private Object responseData;
 }

@@ -1,5 +1,6 @@
 package com.egemsoft.application.rickandmortyapi.service.impl;
 
+import com.egemsoft.application.rickandmortyapi.exception.NotFoundException;
 import com.egemsoft.application.rickandmortyapi.helper.ReportingHelper;
 import com.egemsoft.application.rickandmortyapi.logger.ESLogger;
 import com.egemsoft.application.rickandmortyapi.model.Location;
@@ -23,7 +24,8 @@ import java.util.List;
 public class LocationServiceImpl extends AbstractServiceImpl<Location> implements LocationService {
 
     private static final ESLogger logger = ESLogger.getLogger(LocationServiceImpl.class);
-    private final static String LOCATION_PAGE_URL = "/location/?page=";
+    private static final String LOCATION_PAGE_URL = "/location/?page=";
+    private static String ERROR_MESSAGE = null;
 
     private final LocationRepository locationRepository;
     private final ReportingHelper reportingHelper;
@@ -52,7 +54,7 @@ public class LocationServiceImpl extends AbstractServiceImpl<Location> implement
         List<Location> locations = locationRepository.getLocations();
         ResponseInfo responseInfo = getResponseInfo(locations.size(), pageNumber, url.concat(LOCATION_PAGE_URL));
         List<Location> paginatedLocations = findPaginatedData(locations, pageNumber);
-        reportingHelper.addHistory(Endpoint.LOCATION, RestResponse.of(paginatedLocations, responseInfo));
+        reportingHelper.addHistory(Endpoint.LOCATION, ERROR_MESSAGE, RestResponse.of(paginatedLocations, responseInfo));
 
         return RestResponse.of(paginatedLocations, responseInfo);
     }
@@ -65,9 +67,13 @@ public class LocationServiceImpl extends AbstractServiceImpl<Location> implement
     public Location findById(Long id) {
         logger.debug("findById id: {}", id);
 
-        Location location = findById(locationRepository.getLocations(), id);
-        reportingHelper.addHistory(Endpoint.LOCATION, location);
-
-        return location;
+        try {
+            Location location = findById(locationRepository.getLocations(), id);
+            reportingHelper.addHistory(Endpoint.LOCATION, ERROR_MESSAGE, location);
+            return location;
+        } catch (NotFoundException e) {
+            reportingHelper.addHistory(Endpoint.LOCATION, e.getMessage(), null);
+            throw e;
+        }
     }
 }

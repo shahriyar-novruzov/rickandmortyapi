@@ -10,6 +10,9 @@ import feign.codec.ErrorDecoder;
 
 import java.io.IOException;
 
+/**
+ * Decoder for Feign client when rest error occurs
+ */
 public class RestErrorResponseDecoder implements ErrorDecoder {
 
     private static final ESLogger logger = ESLogger.getLogger(RestErrorResponseDecoder.class);

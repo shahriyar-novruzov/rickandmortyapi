@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+/**
+ * Helper for create history from parameters and save in repository
+ */
 @Component
 public class ReportingHelper {
 
@@ -18,7 +21,12 @@ public class ReportingHelper {
         this.reportingRepository = reportingRepository;
     }
 
-    public void addHistory(Endpoint endpoint, Object responseData) {
+    /**
+     * @param endpoint     endpoint type
+     * @param errorMessage any error message during operation
+     * @param responseData response data for the request
+     */
+    public void addHistory(Endpoint endpoint, String errorMessage, Object responseData) {
         History history = History
                 .builder()
                 .endpoint(endpoint)
@@ -27,6 +35,7 @@ public class ReportingHelper {
                 .userIp(MDC.get(LoggerKeys.USER_IP))
                 .userAgent(MDC.get(LoggerKeys.USER_AGENT))
                 .dateTime(LocalDateTime.now())
+                .errorMessage(errorMessage)
                 .responseData(responseData)
                 .build();
         reportingRepository.addHistory(history);

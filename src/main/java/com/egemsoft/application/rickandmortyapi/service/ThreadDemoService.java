@@ -21,7 +21,7 @@ public class ThreadDemoService {
 
     private final CharacterRepository characterRepository;
     private Map<String, Integer> threadMap;
-    private CountDownLatch latch;
+    private CountDownLatch countDownLatch;
 
     public ThreadDemoService(CharacterRepository characterRepository) {
         this.characterRepository = characterRepository;
@@ -42,14 +42,14 @@ public class ThreadDemoService {
         public void run() {
             String currentThreadName = Thread.currentThread().getName();
             threadMap.put(currentThreadName, threadMap.getOrDefault(currentThreadName, 0) + name.length());
-            latch.countDown();
+            countDownLatch.countDown();
         }
     }
 
     public ThreadDemo countNameCharacters() {
 
         List<Character> characters = characterRepository.getCharacters();
-        latch = new CountDownLatch(characters.size());
+        countDownLatch = new CountDownLatch(characters.size());
         threadMap = new HashMap<>();
         ExecutorService executorService = Executors.newFixedThreadPool(25);
 
@@ -59,7 +59,7 @@ public class ThreadDemoService {
         }
 
         try {
-            latch.await();
+            countDownLatch.await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

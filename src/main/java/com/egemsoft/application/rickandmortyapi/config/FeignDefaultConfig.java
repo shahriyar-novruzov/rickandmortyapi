@@ -11,6 +11,9 @@ import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Default Feign config for enable feign clients on defined package
+ */
 @Configuration
 @EnableFeignClients(basePackages = "com.egemsoft.application.rickandmortyapi.client")
 public class FeignDefaultConfig {

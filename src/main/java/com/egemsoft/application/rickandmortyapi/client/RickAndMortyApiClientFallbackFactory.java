@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Fallback factory when client exception occurs
+ */
 @Component
 public class RickAndMortyApiClientFallbackFactory implements FallbackFactory<RickAndMortyApiClient> {
 

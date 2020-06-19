@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * Client for request rickandmortyapi side
+ */
 @Primary
 @FeignClient(name = "account",
         url = "${client.rickandmortyapi.url}",

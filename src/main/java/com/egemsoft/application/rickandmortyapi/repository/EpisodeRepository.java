@@ -6,15 +6,24 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository for store Episodes in memory
+ */
 @Repository
 public class EpisodeRepository {
 
     private List<Episode> episodes = new ArrayList<>();
 
-    public void addAll(List<Episode> episodes) {
-        this.episodes.addAll(episodes);
+    /**
+     * @param paginatedEpisodes Episodes on every page
+     */
+    public void addAll(List<Episode> paginatedEpisodes) {
+        this.episodes.addAll(paginatedEpisodes);
     }
 
+    /**
+     * @return all Episodes in store
+     */
     public List<Episode> getEpisodes() {
         return this.episodes;
     }

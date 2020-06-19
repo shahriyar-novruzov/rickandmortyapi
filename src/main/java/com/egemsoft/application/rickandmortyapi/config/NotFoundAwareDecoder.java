@@ -12,6 +12,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+/**
+ * Decoder for Feign client
+ */
 public class NotFoundAwareDecoder implements Decoder {
 
     private final static int NOT_FOUND = 404;

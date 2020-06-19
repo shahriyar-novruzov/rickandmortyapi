@@ -6,15 +6,24 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository for store Characters in memory
+ */
 @Repository
 public class CharacterRepository {
 
     private List<Character> characters = new ArrayList<>();
 
-    public void addAll(List<Character> data) {
-        this.characters.addAll(data);
+    /**
+     * @param paginatedCharacters Characters on every page
+     */
+    public void addAll(List<Character> paginatedCharacters) {
+        this.characters.addAll(paginatedCharacters);
     }
 
+    /**
+     * @return all Characters in store
+     */
     public List<Character> getCharacters() {
         return this.characters;
     }

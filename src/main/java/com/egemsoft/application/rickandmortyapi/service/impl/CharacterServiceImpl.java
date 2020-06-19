@@ -1,5 +1,6 @@
 package com.egemsoft.application.rickandmortyapi.service.impl;
 
+import com.egemsoft.application.rickandmortyapi.exception.NotFoundException;
 import com.egemsoft.application.rickandmortyapi.helper.ReportingHelper;
 import com.egemsoft.application.rickandmortyapi.logger.ESLogger;
 import com.egemsoft.application.rickandmortyapi.model.Base;
@@ -28,6 +29,7 @@ public class CharacterServiceImpl extends AbstractServiceImpl<Character> impleme
     private static final String SORT_BY_NAME = "name";
     private static final String SORT_BY_EPISODE = "episode";
     private static final String CHARACTER_PAGE_URL = "/character/?page=";
+    private static String ERROR_MESSAGE = null;
 
     private final ReportingHelper reportingHelper;
     private final CharacterRepository characterRepository;
@@ -58,7 +60,8 @@ public class CharacterServiceImpl extends AbstractServiceImpl<Character> impleme
         characters.sort(getComparator(sortBy));
         ResponseInfo responseInfo = getResponseInfo(characters.size(), pageNumber, url.concat(CHARACTER_PAGE_URL));
         List<Character> paginatedCharacters = findPaginatedData(characters, pageNumber);
-        reportingHelper.addHistory(Endpoint.CHARACTER, RestResponse.of(paginatedCharacters, responseInfo));
+        reportingHelper
+                .addHistory(Endpoint.CHARACTER, ERROR_MESSAGE, RestResponse.of(paginatedCharacters, responseInfo));
 
         return RestResponse.of(paginatedCharacters, responseInfo);
     }
@@ -82,9 +85,13 @@ public class CharacterServiceImpl extends AbstractServiceImpl<Character> impleme
     public Character findById(Long id) {
         logger.debug("findById id: {}", id);
 
-        Character character = findById(characterRepository.getCharacters(), id);
-        reportingHelper.addHistory(Endpoint.CHARACTER, character);
-
-        return character;
+        try {
+            Character character = findById(characterRepository.getCharacters(), id);
+            reportingHelper.addHistory(Endpoint.CHARACTER, ERROR_MESSAGE, character);
+            return character;
+        } catch (NotFoundException e) {
+            reportingHelper.addHistory(Endpoint.CHARACTER, e.getMessage(), null);
+            throw e;
+        }
     }
 }

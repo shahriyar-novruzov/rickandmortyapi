@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+/**
+ * Interceptor to catch request and response add some parameters
+ */
 public class InterceptorConfig extends HandlerInterceptorAdapter {
     private static final ESLogger logger = ESLogger.getLogger(InterceptorConfig.class);
 

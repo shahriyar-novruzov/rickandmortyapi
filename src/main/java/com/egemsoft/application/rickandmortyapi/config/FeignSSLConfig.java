@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
+/**
+ * SSL config to request https client side
+ */
 @Configuration
 public class FeignSSLConfig {
 

@@ -1,5 +1,6 @@
 package com.egemsoft.application.rickandmortyapi.service.impl;
 
+import com.egemsoft.application.rickandmortyapi.exception.NotFoundException;
 import com.egemsoft.application.rickandmortyapi.helper.ReportingHelper;
 import com.egemsoft.application.rickandmortyapi.logger.ESLogger;
 import com.egemsoft.application.rickandmortyapi.model.Base;
@@ -27,7 +28,8 @@ public class EpisodeServiceImpl extends AbstractServiceImpl<Episode> implements 
     private static final ESLogger logger = ESLogger.getLogger(EpisodeServiceImpl.class);
     private static final String SORT_BY_NAME = "name";
     private static final String SORT_BY_CHARACTER = "character";
-    private final static String EPISODE_PAGE_URL = "/episode/?page=";
+    private static final String EPISODE_PAGE_URL = "/episode/?page=";
+    private static String ERROR_MESSAGE = null;
 
     private final EpisodeRepository episodeRepository;
     private final ReportingHelper reportingHelper;
@@ -57,7 +59,7 @@ public class EpisodeServiceImpl extends AbstractServiceImpl<Episode> implements 
         episodes.sort(getComparator(sortBy));
         ResponseInfo responseInfo = getResponseInfo(episodes.size(), pageNumber, url.concat(EPISODE_PAGE_URL));
         List<Episode> paginatedEpisodes = findPaginatedData(episodes, pageNumber);
-        reportingHelper.addHistory(Endpoint.EPISODE, RestResponse.of(paginatedEpisodes, responseInfo));
+        reportingHelper.addHistory(Endpoint.EPISODE, ERROR_MESSAGE, RestResponse.of(paginatedEpisodes, responseInfo));
 
         return RestResponse.of(paginatedEpisodes, responseInfo);
     }
@@ -80,10 +82,13 @@ public class EpisodeServiceImpl extends AbstractServiceImpl<Episode> implements 
     @Override
     public Episode findById(Long id) {
         logger.debug("findById id: {}", id);
-
-        Episode episode = findById(episodeRepository.getEpisodes(), id);
-        reportingHelper.addHistory(Endpoint.EPISODE, episode);
-
-        return episode;
+        try {
+            Episode episode = findById(episodeRepository.getEpisodes(), id);
+            reportingHelper.addHistory(Endpoint.EPISODE, ERROR_MESSAGE, episode);
+            return episode;
+        } catch (NotFoundException e) {
+            reportingHelper.addHistory(Endpoint.EPISODE, e.getMessage(), null);
+            throw e;
+        }
     }
 }
